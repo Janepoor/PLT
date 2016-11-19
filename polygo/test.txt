@@ -1,0 +1,6 @@
+int fun(int a){
+	int c;
+	float s = 11.233;
+	int [2]a = [1,2];
+	return a;	
+}

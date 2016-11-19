@@ -1,0 +1,2972 @@
+   0  $accept : %entry% $end
+
+   1  program : decls EOF
+
+   2  decls :
+   3        | decls vdecl
+   4        | decls fdecl
+
+   5  fdecl : typ ID LPAREN formal_list_opt RPAREN LBRACE vdecl_list_opt stmt_list_rev RBRACE
+
+   6  typ : typ_a
+   7      | BOOL
+   8      | STRING
+   9      | POLY
+
+  10  typ_a : INT
+  11        | FLOAT
+  12        | COMPLEX
+
+  13  formal : typ ID
+  14         | typ_a LBRACKET RBRACKET ID
+
+  15  formal_list : formal
+  16              | formal_list COMMA formal
+
+  17  formal_list_opt :
+  18                  | formal_list
+
+  19  vdecl_list_opt :
+  20                 | vdecl_list_opt vdecl
+
+  21  vdecl : typ ID SEMI
+  22        | typ ID ASSIGN primary SEMI
+  23        | typ_a LBRACKET INTLIT RBRACKET ID SEMI
+  24        | typ_a LBRACKET INTLIT RBRACKET ID ASSIGN LBRACKET primary_ap_list_opt RBRACKET SEMI
+
+  25  stmt_list_rev : stmt
+  26                | stmt_list_rev stmt
+
+  27  stmt : expr SEMI
+  28       | RETURN SEMI
+  29       | RETURN expr SEMI
+  30       | IF LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE
+  31       | IF LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE ELSE LBRACE stmt_list_rev RBRACE
+  32       | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN LBRACE stmt_list_rev RBRACE
+  33       | FOREACH ID IN expr_list LBRACE stmt_list_rev RBRACE
+  34       | WHILE LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE
+
+  35  expr : primary
+  36       | LBRACKET primary_ap_list_opt RBRACKET
+  37       | LPAREN expr RPAREN
+  38       | expr PLUS expr
+  39       | expr MINUS expr
+  40       | expr TIMES expr
+  41       | expr DIVIDE expr
+  42       | expr EQ expr
+  43       | expr NEQ expr
+  44       | expr LT expr
+  45       | expr LEQ expr
+  46       | expr GT expr
+  47       | expr GEQ expr
+  48       | expr AND expr
+  49       | expr OR expr
+  50       | expr MODULUS expr
+  51       | MINUS expr
+  52       | NOT expr
+  53       | PLUSONE expr
+  54       | MINUSONE expr
+  55       | ID LPAREN expr_list_opt RPAREN
+  56       | extr_asn_value ASSIGN expr
+
+  57  primary : primary_ap
+  58          | LBRACE primary_ap_list_opt RBRACE
+  59          | FALSE
+  60          | TRUE
+  61          | STRINGLIT
+
+  62  primary_ap_list_opt :
+  63                      | primary_ap_list
+
+  64  primary_ap_list : primary_ap
+  65                  | primary_ap_list COMMA primary_ap
+
+  66  primary_ap : primary_c
+  67             | LT primary_c COMMA primary_c GT
+  68             | extr_asn_value
+
+  69  extr_asn_value : ID
+  70                 | ID LLBRACKET INTLIT RRBRACKET
+  71                 | ID LBRACKET INTLIT RBRACKET
+
+  72  primary_c : INTLIT
+  73            | FLOATLIT
+
+  74  expr_list_opt :
+  75                | expr_list
+
+  76  expr_list : expr
+  77            | expr_list COMMA expr
+
+  78  expr_opt :
+  79           | expr
+
+  80  %entry% : '\001' program
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . program  (80)
+	decls : .  (2)
+
+	.  reduce 2
+
+	program  goto 3
+	decls  goto 4
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	%entry% : '\001' program .  (80)
+
+	.  reduce 80
+
+
+state 4
+	program : decls . EOF  (1)
+	decls : decls . vdecl  (3)
+	decls : decls . fdecl  (4)
+
+	INT  shift 5
+	FLOAT  shift 6
+	BOOL  shift 7
+	COMPLEX  shift 8
+	POLY  shift 9
+	STRING  shift 10
+	EOF  shift 11
+	.  error
+
+	vdecl  goto 12
+	fdecl  goto 13
+	typ  goto 14
+	typ_a  goto 15
+
+
+state 5
+	typ_a : INT .  (10)
+
+	.  reduce 10
+
+
+state 6
+	typ_a : FLOAT .  (11)
+
+	.  reduce 11
+
+
+state 7
+	typ : BOOL .  (7)
+
+	.  reduce 7
+
+
+state 8
+	typ_a : COMPLEX .  (12)
+
+	.  reduce 12
+
+
+state 9
+	typ : POLY .  (9)
+
+	.  reduce 9
+
+
+state 10
+	typ : STRING .  (8)
+
+	.  reduce 8
+
+
+state 11
+	program : decls EOF .  (1)
+
+	.  reduce 1
+
+
+state 12
+	decls : decls vdecl .  (3)
+
+	.  reduce 3
+
+
+state 13
+	decls : decls fdecl .  (4)
+
+	.  reduce 4
+
+
+state 14
+	fdecl : typ . ID LPAREN formal_list_opt RPAREN LBRACE vdecl_list_opt stmt_list_rev RBRACE  (5)
+	vdecl : typ . ID SEMI  (21)
+	vdecl : typ . ID ASSIGN primary SEMI  (22)
+
+	ID  shift 16
+	.  error
+
+
+state 15
+	typ : typ_a .  (6)
+	vdecl : typ_a . LBRACKET INTLIT RBRACKET ID SEMI  (23)
+	vdecl : typ_a . LBRACKET INTLIT RBRACKET ID ASSIGN LBRACKET primary_ap_list_opt RBRACKET SEMI  (24)
+
+	LBRACKET  shift 17
+	ID  reduce 6
+
+
+state 16
+	fdecl : typ ID . LPAREN formal_list_opt RPAREN LBRACE vdecl_list_opt stmt_list_rev RBRACE  (5)
+	vdecl : typ ID . SEMI  (21)
+	vdecl : typ ID . ASSIGN primary SEMI  (22)
+
+	SEMI  shift 18
+	LPAREN  shift 19
+	ASSIGN  shift 20
+	.  error
+
+
+state 17
+	vdecl : typ_a LBRACKET . INTLIT RBRACKET ID SEMI  (23)
+	vdecl : typ_a LBRACKET . INTLIT RBRACKET ID ASSIGN LBRACKET primary_ap_list_opt RBRACKET SEMI  (24)
+
+	INTLIT  shift 21
+	.  error
+
+
+state 18
+	vdecl : typ ID SEMI .  (21)
+
+	.  reduce 21
+
+
+state 19
+	fdecl : typ ID LPAREN . formal_list_opt RPAREN LBRACE vdecl_list_opt stmt_list_rev RBRACE  (5)
+	formal_list_opt : .  (17)
+
+	INT  shift 5
+	FLOAT  shift 6
+	BOOL  shift 7
+	COMPLEX  shift 8
+	POLY  shift 9
+	STRING  shift 10
+	RPAREN  reduce 17
+
+	typ  goto 22
+	formal_list_opt  goto 23
+	typ_a  goto 24
+	formal  goto 25
+	formal_list  goto 26
+
+
+state 20
+	vdecl : typ ID ASSIGN . primary SEMI  (22)
+
+	LBRACE  shift 27
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 33
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 35
+	extr_asn_value  goto 36
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 21
+	vdecl : typ_a LBRACKET INTLIT . RBRACKET ID SEMI  (23)
+	vdecl : typ_a LBRACKET INTLIT . RBRACKET ID ASSIGN LBRACKET primary_ap_list_opt RBRACKET SEMI  (24)
+
+	RBRACKET  shift 39
+	.  error
+
+
+state 22
+	formal : typ . ID  (13)
+
+	ID  shift 40
+	.  error
+
+
+state 23
+	fdecl : typ ID LPAREN formal_list_opt . RPAREN LBRACE vdecl_list_opt stmt_list_rev RBRACE  (5)
+
+	RPAREN  shift 41
+	.  error
+
+
+state 24
+	typ : typ_a .  (6)
+	formal : typ_a . LBRACKET RBRACKET ID  (14)
+
+	LBRACKET  shift 42
+	ID  reduce 6
+
+
+state 25
+	formal_list : formal .  (15)
+
+	.  reduce 15
+
+
+state 26
+	formal_list : formal_list . COMMA formal  (16)
+	formal_list_opt : formal_list .  (18)
+
+	COMMA  shift 43
+	RPAREN  reduce 18
+
+
+state 27
+	primary : LBRACE . primary_ap_list_opt RBRACE  (58)
+	primary_ap_list_opt : .  (62)
+
+	LT  shift 28
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 33
+	RBRACE  reduce 62
+
+	primary_ap_list_opt  goto 44
+	extr_asn_value  goto 36
+	primary_ap  goto 45
+	primary_ap_list  goto 46
+	primary_c  goto 38
+
+
+state 28
+	primary_ap : LT . primary_c COMMA primary_c GT  (67)
+
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	.  error
+
+	primary_c  goto 47
+
+
+state 29
+	primary : TRUE .  (60)
+
+	.  reduce 60
+
+
+state 30
+	primary : FALSE .  (59)
+
+	.  reduce 59
+
+
+state 31
+	primary_c : INTLIT .  (72)
+
+	.  reduce 72
+
+
+state 32
+	primary_c : FLOATLIT .  (73)
+
+	.  reduce 73
+
+
+state 33
+	extr_asn_value : ID .  (69)
+	extr_asn_value : ID . LLBRACKET INTLIT RRBRACKET  (70)
+	extr_asn_value : ID . LBRACKET INTLIT RBRACKET  (71)
+
+	LBRACKET  shift 48
+	LLBRACKET  shift 49
+	SEMI  reduce 69
+	RBRACE  reduce 69
+	COMMA  reduce 69
+	RBRACKET  reduce 69
+
+
+state 34
+	primary : STRINGLIT .  (61)
+
+	.  reduce 61
+
+
+state 35
+	vdecl : typ ID ASSIGN primary . SEMI  (22)
+
+	SEMI  shift 50
+	.  error
+
+
+state 36
+	primary_ap : extr_asn_value .  (68)
+
+	.  reduce 68
+
+
+state 37
+	primary : primary_ap .  (57)
+
+	.  reduce 57
+
+
+state 38
+	primary_ap : primary_c .  (66)
+
+	.  reduce 66
+
+
+state 39
+	vdecl : typ_a LBRACKET INTLIT RBRACKET . ID SEMI  (23)
+	vdecl : typ_a LBRACKET INTLIT RBRACKET . ID ASSIGN LBRACKET primary_ap_list_opt RBRACKET SEMI  (24)
+
+	ID  shift 51
+	.  error
+
+
+state 40
+	formal : typ ID .  (13)
+
+	.  reduce 13
+
+
+state 41
+	fdecl : typ ID LPAREN formal_list_opt RPAREN . LBRACE vdecl_list_opt stmt_list_rev RBRACE  (5)
+
+	LBRACE  shift 52
+	.  error
+
+
+state 42
+	formal : typ_a LBRACKET . RBRACKET ID  (14)
+
+	RBRACKET  shift 53
+	.  error
+
+
+state 43
+	formal_list : formal_list COMMA . formal  (16)
+
+	INT  shift 5
+	FLOAT  shift 6
+	BOOL  shift 7
+	COMPLEX  shift 8
+	POLY  shift 9
+	STRING  shift 10
+	.  error
+
+	typ  goto 22
+	typ_a  goto 24
+	formal  goto 54
+
+
+state 44
+	primary : LBRACE primary_ap_list_opt . RBRACE  (58)
+
+	RBRACE  shift 55
+	.  error
+
+
+state 45
+	primary_ap_list : primary_ap .  (64)
+
+	.  reduce 64
+
+
+state 46
+	primary_ap_list_opt : primary_ap_list .  (63)
+	primary_ap_list : primary_ap_list . COMMA primary_ap  (65)
+
+	COMMA  shift 56
+	RBRACE  reduce 63
+	RBRACKET  reduce 63
+
+
+state 47
+	primary_ap : LT primary_c . COMMA primary_c GT  (67)
+
+	COMMA  shift 57
+	.  error
+
+
+state 48
+	extr_asn_value : ID LBRACKET . INTLIT RBRACKET  (71)
+
+	INTLIT  shift 58
+	.  error
+
+
+state 49
+	extr_asn_value : ID LLBRACKET . INTLIT RRBRACKET  (70)
+
+	INTLIT  shift 59
+	.  error
+
+
+state 50
+	vdecl : typ ID ASSIGN primary SEMI .  (22)
+
+	.  reduce 22
+
+
+state 51
+	vdecl : typ_a LBRACKET INTLIT RBRACKET ID . SEMI  (23)
+	vdecl : typ_a LBRACKET INTLIT RBRACKET ID . ASSIGN LBRACKET primary_ap_list_opt RBRACKET SEMI  (24)
+
+	SEMI  shift 60
+	ASSIGN  shift 61
+	.  error
+
+
+state 52
+	fdecl : typ ID LPAREN formal_list_opt RPAREN LBRACE . vdecl_list_opt stmt_list_rev RBRACE  (5)
+	vdecl_list_opt : .  (19)
+
+	.  reduce 19
+
+	vdecl_list_opt  goto 62
+
+
+state 53
+	formal : typ_a LBRACKET RBRACKET . ID  (14)
+
+	ID  shift 63
+	.  error
+
+
+state 54
+	formal_list : formal_list COMMA formal .  (16)
+
+	.  reduce 16
+
+
+state 55
+	primary : LBRACE primary_ap_list_opt RBRACE .  (58)
+
+	.  reduce 58
+
+
+state 56
+	primary_ap_list : primary_ap_list COMMA . primary_ap  (65)
+
+	LT  shift 28
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 33
+	.  error
+
+	extr_asn_value  goto 36
+	primary_ap  goto 64
+	primary_c  goto 38
+
+
+state 57
+	primary_ap : LT primary_c COMMA . primary_c GT  (67)
+
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	.  error
+
+	primary_c  goto 65
+
+
+state 58
+	extr_asn_value : ID LBRACKET INTLIT . RBRACKET  (71)
+
+	RBRACKET  shift 66
+	.  error
+
+
+state 59
+	extr_asn_value : ID LLBRACKET INTLIT . RRBRACKET  (70)
+
+	RRBRACKET  shift 67
+	.  error
+
+
+state 60
+	vdecl : typ_a LBRACKET INTLIT RBRACKET ID SEMI .  (23)
+
+	.  reduce 23
+
+
+state 61
+	vdecl : typ_a LBRACKET INTLIT RBRACKET ID ASSIGN . LBRACKET primary_ap_list_opt RBRACKET SEMI  (24)
+
+	LBRACKET  shift 68
+	.  error
+
+
+state 62
+	fdecl : typ ID LPAREN formal_list_opt RPAREN LBRACE vdecl_list_opt . stmt_list_rev RBRACE  (5)
+	vdecl_list_opt : vdecl_list_opt . vdecl  (20)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INT  shift 5
+	FLOAT  shift 6
+	BOOL  shift 7
+	COMPLEX  shift 8
+	POLY  shift 9
+	STRING  shift 10
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	vdecl  goto 81
+	typ  goto 82
+	stmt_list_rev  goto 83
+	typ_a  goto 15
+	primary  goto 84
+	stmt  goto 85
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 63
+	formal : typ_a LBRACKET RBRACKET ID .  (14)
+
+	.  reduce 14
+
+
+state 64
+	primary_ap_list : primary_ap_list COMMA primary_ap .  (65)
+
+	.  reduce 65
+
+
+state 65
+	primary_ap : LT primary_c COMMA primary_c . GT  (67)
+
+	GT  shift 88
+	.  error
+
+
+state 66
+	extr_asn_value : ID LBRACKET INTLIT RBRACKET .  (71)
+
+	.  reduce 71
+
+
+state 67
+	extr_asn_value : ID LLBRACKET INTLIT RRBRACKET .  (70)
+
+	.  reduce 70
+
+
+state 68
+	vdecl : typ_a LBRACKET INTLIT RBRACKET ID ASSIGN LBRACKET . primary_ap_list_opt RBRACKET SEMI  (24)
+	primary_ap_list_opt : .  (62)
+
+	LT  shift 28
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 33
+	RBRACKET  reduce 62
+
+	primary_ap_list_opt  goto 89
+	extr_asn_value  goto 36
+	primary_ap  goto 45
+	primary_ap_list  goto 46
+	primary_c  goto 38
+
+
+state 69
+	expr : LPAREN . expr RPAREN  (37)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 90
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 70
+	expr : LBRACKET . primary_ap_list_opt RBRACKET  (36)
+	primary_ap_list_opt : .  (62)
+
+	LT  shift 28
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 33
+	RBRACKET  reduce 62
+
+	primary_ap_list_opt  goto 91
+	extr_asn_value  goto 36
+	primary_ap  goto 45
+	primary_ap_list  goto 46
+	primary_c  goto 38
+
+
+state 71
+	expr : MINUS . expr  (51)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 92
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 72
+	expr : PLUSONE . expr  (53)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 93
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 73
+	expr : MINUSONE . expr  (54)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 94
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 74
+	expr : NOT . expr  (52)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 95
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 75
+	stmt : RETURN . SEMI  (28)
+	stmt : RETURN . expr SEMI  (29)
+
+	SEMI  shift 96
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 97
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 76
+	stmt : IF . LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE  (30)
+	stmt : IF . LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE ELSE LBRACE stmt_list_rev RBRACE  (31)
+
+	LPAREN  shift 98
+	.  error
+
+
+state 77
+	stmt : FOR . LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN LBRACE stmt_list_rev RBRACE  (32)
+
+	LPAREN  shift 99
+	.  error
+
+
+state 78
+	stmt : FOREACH . ID IN expr_list LBRACE stmt_list_rev RBRACE  (33)
+
+	ID  shift 100
+	.  error
+
+
+state 79
+	stmt : WHILE . LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE  (34)
+
+	LPAREN  shift 101
+	.  error
+
+
+state 80
+	expr : ID . LPAREN expr_list_opt RPAREN  (55)
+	extr_asn_value : ID .  (69)
+	extr_asn_value : ID . LLBRACKET INTLIT RRBRACKET  (70)
+	extr_asn_value : ID . LBRACKET INTLIT RBRACKET  (71)
+
+	LPAREN  shift 102
+	LBRACKET  shift 48
+	LLBRACKET  shift 49
+	SEMI  reduce 69
+	RPAREN  reduce 69
+	LBRACE  reduce 69
+	COMMA  reduce 69
+	PLUS  reduce 69
+	MINUS  reduce 69
+	TIMES  reduce 69
+	DIVIDE  reduce 69
+	MODULUS  reduce 69
+	ASSIGN  reduce 69
+	EQ  reduce 69
+	NEQ  reduce 69
+	LT  reduce 69
+	LEQ  reduce 69
+	GT  reduce 69
+	GEQ  reduce 69
+	AND  reduce 69
+	OR  reduce 69
+
+
+state 81
+	vdecl_list_opt : vdecl_list_opt vdecl .  (20)
+
+	.  reduce 20
+
+
+state 82
+	vdecl : typ . ID SEMI  (21)
+	vdecl : typ . ID ASSIGN primary SEMI  (22)
+
+	ID  shift 103
+	.  error
+
+
+state 83
+	fdecl : typ ID LPAREN formal_list_opt RPAREN LBRACE vdecl_list_opt stmt_list_rev . RBRACE  (5)
+	stmt_list_rev : stmt_list_rev . stmt  (26)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	RBRACE  shift 104
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	stmt  goto 105
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 84
+	expr : primary .  (35)
+
+	.  reduce 35
+
+
+state 85
+	stmt_list_rev : stmt .  (25)
+
+	.  reduce 25
+
+
+state 86
+	stmt : expr . SEMI  (27)
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	SEMI  shift 106
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	.  error
+
+
+state 87
+	expr : extr_asn_value . ASSIGN expr  (56)
+	primary_ap : extr_asn_value .  (68)
+
+	ASSIGN  shift 120
+	SEMI  reduce 68
+	RPAREN  reduce 68
+	LBRACE  reduce 68
+	COMMA  reduce 68
+	PLUS  reduce 68
+	MINUS  reduce 68
+	TIMES  reduce 68
+	DIVIDE  reduce 68
+	MODULUS  reduce 68
+	EQ  reduce 68
+	NEQ  reduce 68
+	LT  reduce 68
+	LEQ  reduce 68
+	GT  reduce 68
+	GEQ  reduce 68
+	AND  reduce 68
+	OR  reduce 68
+
+
+state 88
+	primary_ap : LT primary_c COMMA primary_c GT .  (67)
+
+	.  reduce 67
+
+
+state 89
+	vdecl : typ_a LBRACKET INTLIT RBRACKET ID ASSIGN LBRACKET primary_ap_list_opt . RBRACKET SEMI  (24)
+
+	RBRACKET  shift 121
+	.  error
+
+
+state 90
+	expr : LPAREN expr . RPAREN  (37)
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	RPAREN  shift 122
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	.  error
+
+
+state 91
+	expr : LBRACKET primary_ap_list_opt . RBRACKET  (36)
+
+	RBRACKET  shift 123
+	.  error
+
+
+state 92
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr : MINUS expr .  (51)
+
+	.  reduce 51
+
+
+state 93
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr : PLUSONE expr .  (53)
+
+	.  reduce 53
+
+
+state 94
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr : MINUSONE expr .  (54)
+
+	.  reduce 54
+
+
+state 95
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr : NOT expr .  (52)
+
+	.  reduce 52
+
+
+state 96
+	stmt : RETURN SEMI .  (28)
+
+	.  reduce 28
+
+
+state 97
+	stmt : RETURN expr . SEMI  (29)
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	SEMI  shift 124
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	.  error
+
+
+state 98
+	stmt : IF LPAREN . expr RPAREN LBRACE stmt_list_rev RBRACE  (30)
+	stmt : IF LPAREN . expr RPAREN LBRACE stmt_list_rev RBRACE ELSE LBRACE stmt_list_rev RBRACE  (31)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 125
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 99
+	stmt : FOR LPAREN . expr_opt SEMI expr SEMI expr_opt RPAREN LBRACE stmt_list_rev RBRACE  (32)
+	expr_opt : .  (78)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	SEMI  reduce 78
+
+	primary  goto 84
+	expr  goto 126
+	expr_opt  goto 127
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 100
+	stmt : FOREACH ID . IN expr_list LBRACE stmt_list_rev RBRACE  (33)
+
+	IN  shift 128
+	.  error
+
+
+state 101
+	stmt : WHILE LPAREN . expr RPAREN LBRACE stmt_list_rev RBRACE  (34)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 129
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 102
+	expr : ID LPAREN . expr_list_opt RPAREN  (55)
+	expr_list_opt : .  (74)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	RPAREN  reduce 74
+
+	primary  goto 84
+	expr  goto 130
+	expr_list  goto 131
+	expr_list_opt  goto 132
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 103
+	vdecl : typ ID . SEMI  (21)
+	vdecl : typ ID . ASSIGN primary SEMI  (22)
+
+	SEMI  shift 18
+	ASSIGN  shift 20
+	.  error
+
+
+state 104
+	fdecl : typ ID LPAREN formal_list_opt RPAREN LBRACE vdecl_list_opt stmt_list_rev RBRACE .  (5)
+
+	.  reduce 5
+
+
+state 105
+	stmt_list_rev : stmt_list_rev stmt .  (26)
+
+	.  reduce 26
+
+
+state 106
+	stmt : expr SEMI .  (27)
+
+	.  reduce 27
+
+
+state 107
+	expr : expr PLUS . expr  (38)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 133
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 108
+	expr : expr MINUS . expr  (39)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 134
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 109
+	expr : expr TIMES . expr  (40)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 135
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 110
+	expr : expr DIVIDE . expr  (41)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 136
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 111
+	expr : expr MODULUS . expr  (50)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 137
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 112
+	expr : expr EQ . expr  (42)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 138
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 113
+	expr : expr NEQ . expr  (43)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 139
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 114
+	expr : expr LT . expr  (44)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 140
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 115
+	expr : expr LEQ . expr  (45)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 141
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 116
+	expr : expr GT . expr  (46)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 142
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 117
+	expr : expr GEQ . expr  (47)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 143
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 118
+	expr : expr AND . expr  (48)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 144
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 119
+	expr : expr OR . expr  (49)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 145
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 120
+	expr : extr_asn_value ASSIGN . expr  (56)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 146
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 121
+	vdecl : typ_a LBRACKET INTLIT RBRACKET ID ASSIGN LBRACKET primary_ap_list_opt RBRACKET . SEMI  (24)
+
+	SEMI  shift 147
+	.  error
+
+
+state 122
+	expr : LPAREN expr RPAREN .  (37)
+
+	.  reduce 37
+
+
+state 123
+	expr : LBRACKET primary_ap_list_opt RBRACKET .  (36)
+
+	.  reduce 36
+
+
+state 124
+	stmt : RETURN expr SEMI .  (29)
+
+	.  reduce 29
+
+
+state 125
+	stmt : IF LPAREN expr . RPAREN LBRACE stmt_list_rev RBRACE  (30)
+	stmt : IF LPAREN expr . RPAREN LBRACE stmt_list_rev RBRACE ELSE LBRACE stmt_list_rev RBRACE  (31)
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	RPAREN  shift 148
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	.  error
+
+
+state 126
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr_opt : expr .  (79)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	SEMI  reduce 79
+	RPAREN  reduce 79
+
+
+state 127
+	stmt : FOR LPAREN expr_opt . SEMI expr SEMI expr_opt RPAREN LBRACE stmt_list_rev RBRACE  (32)
+
+	SEMI  shift 149
+	.  error
+
+
+state 128
+	stmt : FOREACH ID IN . expr_list LBRACE stmt_list_rev RBRACE  (33)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 130
+	expr_list  goto 150
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 129
+	stmt : WHILE LPAREN expr . RPAREN LBRACE stmt_list_rev RBRACE  (34)
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	RPAREN  shift 151
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	.  error
+
+
+state 130
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr_list : expr .  (76)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	RPAREN  reduce 76
+	LBRACE  reduce 76
+	COMMA  reduce 76
+
+
+state 131
+	expr_list_opt : expr_list .  (75)
+	expr_list : expr_list . COMMA expr  (77)
+
+	COMMA  shift 152
+	RPAREN  reduce 75
+
+
+state 132
+	expr : ID LPAREN expr_list_opt . RPAREN  (55)
+
+	RPAREN  shift 153
+	.  error
+
+
+state 133
+	expr : expr . PLUS expr  (38)
+	expr : expr PLUS expr .  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	SEMI  reduce 38
+	RPAREN  reduce 38
+	LBRACE  reduce 38
+	COMMA  reduce 38
+	PLUS  reduce 38
+	MINUS  reduce 38
+	EQ  reduce 38
+	NEQ  reduce 38
+	LT  reduce 38
+	LEQ  reduce 38
+	GT  reduce 38
+	GEQ  reduce 38
+	AND  reduce 38
+	OR  reduce 38
+
+
+state 134
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr MINUS expr .  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	SEMI  reduce 39
+	RPAREN  reduce 39
+	LBRACE  reduce 39
+	COMMA  reduce 39
+	PLUS  reduce 39
+	MINUS  reduce 39
+	EQ  reduce 39
+	NEQ  reduce 39
+	LT  reduce 39
+	LEQ  reduce 39
+	GT  reduce 39
+	GEQ  reduce 39
+	AND  reduce 39
+	OR  reduce 39
+
+
+state 135
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr TIMES expr .  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	.  reduce 40
+
+
+state 136
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr DIVIDE expr .  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	.  reduce 41
+
+
+state 137
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr : expr MODULUS expr .  (50)
+
+	.  reduce 50
+
+
+state 138
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr EQ expr .  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	SEMI  reduce 42
+	RPAREN  reduce 42
+	LBRACE  reduce 42
+	COMMA  reduce 42
+	EQ  reduce 42
+	NEQ  reduce 42
+	AND  reduce 42
+	OR  reduce 42
+
+
+state 139
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr NEQ expr .  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	SEMI  reduce 43
+	RPAREN  reduce 43
+	LBRACE  reduce 43
+	COMMA  reduce 43
+	EQ  reduce 43
+	NEQ  reduce 43
+	AND  reduce 43
+	OR  reduce 43
+
+
+state 140
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr LT expr .  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	SEMI  reduce 44
+	RPAREN  reduce 44
+	LBRACE  reduce 44
+	COMMA  reduce 44
+	EQ  reduce 44
+	NEQ  reduce 44
+	LT  reduce 44
+	LEQ  reduce 44
+	GT  reduce 44
+	GEQ  reduce 44
+	AND  reduce 44
+	OR  reduce 44
+
+
+state 141
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr LEQ expr .  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	SEMI  reduce 45
+	RPAREN  reduce 45
+	LBRACE  reduce 45
+	COMMA  reduce 45
+	EQ  reduce 45
+	NEQ  reduce 45
+	LT  reduce 45
+	LEQ  reduce 45
+	GT  reduce 45
+	GEQ  reduce 45
+	AND  reduce 45
+	OR  reduce 45
+
+
+state 142
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr GT expr .  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	SEMI  reduce 46
+	RPAREN  reduce 46
+	LBRACE  reduce 46
+	COMMA  reduce 46
+	EQ  reduce 46
+	NEQ  reduce 46
+	LT  reduce 46
+	LEQ  reduce 46
+	GT  reduce 46
+	GEQ  reduce 46
+	AND  reduce 46
+	OR  reduce 46
+
+
+state 143
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr GEQ expr .  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	SEMI  reduce 47
+	RPAREN  reduce 47
+	LBRACE  reduce 47
+	COMMA  reduce 47
+	EQ  reduce 47
+	NEQ  reduce 47
+	LT  reduce 47
+	LEQ  reduce 47
+	GT  reduce 47
+	GEQ  reduce 47
+	AND  reduce 47
+	OR  reduce 47
+
+
+state 144
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr AND expr .  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	SEMI  reduce 48
+	RPAREN  reduce 48
+	LBRACE  reduce 48
+	COMMA  reduce 48
+	AND  reduce 48
+	OR  reduce 48
+
+
+state 145
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr OR expr .  (49)
+	expr : expr . MODULUS expr  (50)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	SEMI  reduce 49
+	RPAREN  reduce 49
+	LBRACE  reduce 49
+	COMMA  reduce 49
+	OR  reduce 49
+
+
+state 146
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr : extr_asn_value ASSIGN expr .  (56)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	SEMI  reduce 56
+	RPAREN  reduce 56
+	LBRACE  reduce 56
+	COMMA  reduce 56
+
+
+state 147
+	vdecl : typ_a LBRACKET INTLIT RBRACKET ID ASSIGN LBRACKET primary_ap_list_opt RBRACKET SEMI .  (24)
+
+	.  reduce 24
+
+
+state 148
+	stmt : IF LPAREN expr RPAREN . LBRACE stmt_list_rev RBRACE  (30)
+	stmt : IF LPAREN expr RPAREN . LBRACE stmt_list_rev RBRACE ELSE LBRACE stmt_list_rev RBRACE  (31)
+
+	LBRACE  shift 154
+	.  error
+
+
+state 149
+	stmt : FOR LPAREN expr_opt SEMI . expr SEMI expr_opt RPAREN LBRACE stmt_list_rev RBRACE  (32)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 155
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 150
+	stmt : FOREACH ID IN expr_list . LBRACE stmt_list_rev RBRACE  (33)
+	expr_list : expr_list . COMMA expr  (77)
+
+	LBRACE  shift 156
+	COMMA  shift 152
+	.  error
+
+
+state 151
+	stmt : WHILE LPAREN expr RPAREN . LBRACE stmt_list_rev RBRACE  (34)
+
+	LBRACE  shift 157
+	.  error
+
+
+state 152
+	expr_list : expr_list COMMA . expr  (77)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	expr  goto 158
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 153
+	expr : ID LPAREN expr_list_opt RPAREN .  (55)
+
+	.  reduce 55
+
+
+state 154
+	stmt : IF LPAREN expr RPAREN LBRACE . stmt_list_rev RBRACE  (30)
+	stmt : IF LPAREN expr RPAREN LBRACE . stmt_list_rev RBRACE ELSE LBRACE stmt_list_rev RBRACE  (31)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	stmt_list_rev  goto 159
+	primary  goto 84
+	stmt  goto 85
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 155
+	stmt : FOR LPAREN expr_opt SEMI expr . SEMI expr_opt RPAREN LBRACE stmt_list_rev RBRACE  (32)
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+
+	SEMI  shift 160
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	.  error
+
+
+state 156
+	stmt : FOREACH ID IN expr_list LBRACE . stmt_list_rev RBRACE  (33)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	stmt_list_rev  goto 161
+	primary  goto 84
+	stmt  goto 85
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 157
+	stmt : WHILE LPAREN expr RPAREN LBRACE . stmt_list_rev RBRACE  (34)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	stmt_list_rev  goto 162
+	primary  goto 84
+	stmt  goto 85
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 158
+	expr : expr . PLUS expr  (38)
+	expr : expr . MINUS expr  (39)
+	expr : expr . TIMES expr  (40)
+	expr : expr . DIVIDE expr  (41)
+	expr : expr . EQ expr  (42)
+	expr : expr . NEQ expr  (43)
+	expr : expr . LT expr  (44)
+	expr : expr . LEQ expr  (45)
+	expr : expr . GT expr  (46)
+	expr : expr . GEQ expr  (47)
+	expr : expr . AND expr  (48)
+	expr : expr . OR expr  (49)
+	expr : expr . MODULUS expr  (50)
+	expr_list : expr_list COMMA expr .  (77)
+
+	PLUS  shift 107
+	MINUS  shift 108
+	TIMES  shift 109
+	DIVIDE  shift 110
+	MODULUS  shift 111
+	EQ  shift 112
+	NEQ  shift 113
+	LT  shift 114
+	LEQ  shift 115
+	GT  shift 116
+	GEQ  shift 117
+	AND  shift 118
+	OR  shift 119
+	RPAREN  reduce 77
+	LBRACE  reduce 77
+	COMMA  reduce 77
+
+
+state 159
+	stmt_list_rev : stmt_list_rev . stmt  (26)
+	stmt : IF LPAREN expr RPAREN LBRACE stmt_list_rev . RBRACE  (30)
+	stmt : IF LPAREN expr RPAREN LBRACE stmt_list_rev . RBRACE ELSE LBRACE stmt_list_rev RBRACE  (31)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	RBRACE  shift 163
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	stmt  goto 105
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 160
+	stmt : FOR LPAREN expr_opt SEMI expr SEMI . expr_opt RPAREN LBRACE stmt_list_rev RBRACE  (32)
+	expr_opt : .  (78)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	RPAREN  reduce 78
+
+	primary  goto 84
+	expr  goto 126
+	expr_opt  goto 164
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 161
+	stmt_list_rev : stmt_list_rev . stmt  (26)
+	stmt : FOREACH ID IN expr_list LBRACE stmt_list_rev . RBRACE  (33)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	RBRACE  shift 165
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	stmt  goto 105
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 162
+	stmt_list_rev : stmt_list_rev . stmt  (26)
+	stmt : WHILE LPAREN expr RPAREN LBRACE stmt_list_rev . RBRACE  (34)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	RBRACE  shift 166
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	stmt  goto 105
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 163
+	stmt : IF LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE .  (30)
+	stmt : IF LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE . ELSE LBRACE stmt_list_rev RBRACE  (31)
+
+	ELSE  shift 167
+	LPAREN  reduce 30
+	LBRACE  reduce 30
+	RBRACE  reduce 30
+	LBRACKET  reduce 30
+	MINUS  reduce 30
+	PLUSONE  reduce 30
+	MINUSONE  reduce 30
+	LT  reduce 30
+	TRUE  reduce 30
+	FALSE  reduce 30
+	NOT  reduce 30
+	RETURN  reduce 30
+	IF  reduce 30
+	FOR  reduce 30
+	FOREACH  reduce 30
+	WHILE  reduce 30
+	INTLIT  reduce 30
+	FLOATLIT  reduce 30
+	ID  reduce 30
+	STRINGLIT  reduce 30
+
+
+state 164
+	stmt : FOR LPAREN expr_opt SEMI expr SEMI expr_opt . RPAREN LBRACE stmt_list_rev RBRACE  (32)
+
+	RPAREN  shift 168
+	.  error
+
+
+state 165
+	stmt : FOREACH ID IN expr_list LBRACE stmt_list_rev RBRACE .  (33)
+
+	.  reduce 33
+
+
+state 166
+	stmt : WHILE LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE .  (34)
+
+	.  reduce 34
+
+
+state 167
+	stmt : IF LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE ELSE . LBRACE stmt_list_rev RBRACE  (31)
+
+	LBRACE  shift 169
+	.  error
+
+
+state 168
+	stmt : FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN . LBRACE stmt_list_rev RBRACE  (32)
+
+	LBRACE  shift 170
+	.  error
+
+
+state 169
+	stmt : IF LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE ELSE LBRACE . stmt_list_rev RBRACE  (31)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	stmt_list_rev  goto 171
+	primary  goto 84
+	stmt  goto 85
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 170
+	stmt : FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN LBRACE . stmt_list_rev RBRACE  (32)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	stmt_list_rev  goto 172
+	primary  goto 84
+	stmt  goto 85
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 171
+	stmt_list_rev : stmt_list_rev . stmt  (26)
+	stmt : IF LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE ELSE LBRACE stmt_list_rev . RBRACE  (31)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	RBRACE  shift 173
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	stmt  goto 105
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 172
+	stmt_list_rev : stmt_list_rev . stmt  (26)
+	stmt : FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN LBRACE stmt_list_rev . RBRACE  (32)
+
+	LPAREN  shift 69
+	LBRACE  shift 27
+	RBRACE  shift 174
+	LBRACKET  shift 70
+	MINUS  shift 71
+	PLUSONE  shift 72
+	MINUSONE  shift 73
+	LT  shift 28
+	TRUE  shift 29
+	FALSE  shift 30
+	NOT  shift 74
+	RETURN  shift 75
+	IF  shift 76
+	FOR  shift 77
+	FOREACH  shift 78
+	WHILE  shift 79
+	INTLIT  shift 31
+	FLOATLIT  shift 32
+	ID  shift 80
+	STRINGLIT  shift 34
+	.  error
+
+	primary  goto 84
+	stmt  goto 105
+	expr  goto 86
+	extr_asn_value  goto 87
+	primary_ap  goto 37
+	primary_c  goto 38
+
+
+state 173
+	stmt : IF LPAREN expr RPAREN LBRACE stmt_list_rev RBRACE ELSE LBRACE stmt_list_rev RBRACE .  (31)
+
+	.  reduce 31
+
+
+state 174
+	stmt : FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN LBRACE stmt_list_rev RBRACE .  (32)
+
+	.  reduce 32
+
+
+53 terminals, 24 nonterminals
+81 grammar rules, 175 states
